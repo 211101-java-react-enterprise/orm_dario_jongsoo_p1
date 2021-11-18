@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="1106b9d0-eb74-45b2-9c53-7417a4701cd5" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/assignments" beforeDir="false" afterPath="$PROJECT_DIR$/assignments" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assignments/orm_dario_jongsoo_p1/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assignments/orm_dario_jongsoo_p1/orm_dario_jongsoo_p1.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dario_robinson_p0/src/main/java/com/revature/northsouthbank/daos/AppUserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/dario_robinson_p0/src/main/java/com/revature/northsouthbank/daos/AppUserDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dario_robinson_p0/src/main/java/com/revature/northsouthbank/models/AppUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/dario_robinson_p0/src/main/java/com/revature/northsouthbank/models/AppUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dario_robinson_p0/src/main/java/com/revature/northsouthbank/screens/DepositScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/dario_robinson_p0/src/main/java/com/revature/northsouthbank/screens/DepositScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dario_robinson_p0/src/main/java/com/revature/northsouthbank/screens/LoginScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/dario_robinson_p0/src/main/java/com/revature/northsouthbank/screens/LoginScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dario_robinson_p0/src/main/java/com/revature/northsouthbank/screens/RegisterScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/dario_robinson_p0/src/main/java/com/revature/northsouthbank/screens/RegisterScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dario_robinson_p0/src/main/java/com/revature/northsouthbank/screens/ViewBalanceScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/dario_robinson_p0/src/main/java/com/revature/northsouthbank/screens/ViewBalanceScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dario_robinson_p0/src/main/java/com/revature/northsouthbank/screens/WithdrawScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/dario_robinson_p0/src/main/java/com/revature/northsouthbank/screens/WithdrawScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dario_robinson_p0/src/main/java/com/revature/northsouthbank/util/AppState.java" beforeDir="false" afterPath="$PROJECT_DIR$/dario_robinson_p0/src/main/java/com/revature/northsouthbank/util/AppState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dario_robinson_p0/src/main/java/com/revature/northsouthbank/util/logging/Logger.java" beforeDir="false" afterPath="$PROJECT_DIR$/dario_robinson_p0/src/main/java/com/revature/northsouthbank/util/logging/Logger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dario_robinson_p0/src/main/resources/logs/app.log" beforeDir="false" afterPath="$PROJECT_DIR$/dario_robinson_p0/src/main/resources/logs/app.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dario_robinson_p0/target/classes/logs/app.log" beforeDir="false" afterPath="$PROJECT_DIR$/dario_robinson_p0/target/classes/logs/app.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/demos" beforeDir="false" afterPath="$PROJECT_DIR$/demos" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quizzard" beforeDir="false" afterPath="$PROJECT_DIR$/quizzard" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quizzard/src/main/resources/logs/app.log" beforeDir="false" afterPath="$PROJECT_DIR$/quizzard/src/main/resources/logs/app.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quizzard/src/main/resources/table-creation.sql" beforeDir="false" afterPath="$PROJECT_DIR$/quizzard/src/main/resources/table-creation.sql" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="216fS6hhQwOKwPR8rrkD25jokbb" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1106b9d0-eb74-45b2-9c53-7417a4701cd5" name="Changes" comment="" />
+      <created>1637266454736</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1637266454736</updated>
+    </task>
+    <servers />
+  </component>
+</project>

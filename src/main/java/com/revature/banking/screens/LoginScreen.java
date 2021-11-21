@@ -20,6 +20,8 @@ public class LoginScreen extends Screen {
     @Override
     public void render() throws Exception {
 
+        logger.info("LoginScreen#render invoked");
+
         System.out.println("\nPlease provide your credentials to log into your account.");
         System.out.print("Username > ");
         String username = consoleReader.readLine();
@@ -28,7 +30,7 @@ public class LoginScreen extends Screen {
 
         try {
             userService.authenticateUser(username, password);
-            logger.info("Successful authentication of user: %s", username);
+            logger.info("Successful authentication of user: {}", username);
             router.navigate("/dashboard");
         } catch (InvalidRequestException | AuthenticationException e) {
             System.out.println(e.getMessage());

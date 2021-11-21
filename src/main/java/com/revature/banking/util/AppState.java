@@ -10,7 +10,8 @@ import com.revature.banking.screens.WelcomeScreen;
 import com.revature.banking.screens.bank.*;
 import com.revature.banking.services.BankService;
 import com.revature.banking.services.UserService;
-import com.revature.banking.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -24,13 +25,13 @@ import java.io.InputStreamReader;
  */
 public class AppState {
 
-    private final Logger logger;
+    protected Logger logger = LogManager.getLogger();
     private static boolean appRunning;
     private final ScreenRouter router;
 
     public AppState() {
 
-        logger = Logger.getLogger();
+        final Logger logger = LogManager.getLogger();
         logger.info("Initializing application...");
 
         appRunning = true;
@@ -42,7 +43,7 @@ public class AppState {
 
         //userService.authenticateUser("asd", "asd"); // test - to avoid login
 
-        BankDAO bankDAO  = new BankDAO();
+        BankDAO bankDAO = new BankDAO();
         BankService bankService = new BankService(bankDAO, userService);
 
         router.addScreen(new WelcomeScreen(consoleReader, router));

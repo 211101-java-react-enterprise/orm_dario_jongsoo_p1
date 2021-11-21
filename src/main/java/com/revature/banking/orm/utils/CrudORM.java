@@ -11,12 +11,10 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CrudORM {
 
@@ -183,7 +181,7 @@ public class CrudORM {
             String sql = "insert into " + schema + "." + tableName + "( ";
             // ------------ column
             for (Field f : fields) {
-                if (f.getAnnotation(NotIntoDabase.class) !deletTable= null)
+                if (f.getAnnotation(NotIntoDabase.class) != null)
                     continue;
                 sql += f.getName() + ", ";
             }
@@ -234,13 +232,45 @@ public class CrudORM {
         return null;
     }
 
-    public <T> void createTable(Class<T> newUser) {
+    public <T> void testCreateAllTablesWithDataSourceORM() throws SQLException {
+        List<String> listClassesNames = ReflectionORM.getClassNamesInPackage("com.revature");
+        List<Class<?>> classList = listClassesNames.stream()
+                .map(ClassNameToClassMapper.getInstance())
+                .filter(clazz -> clazz.isAnnotationPresent(DataSourceORM.class))
+                .collect(Collectors.toList());
+
+        System.out.println("+---------------------------------------------------------------------------------------+");
+        System.out.printf("Found <<--- %d --->> target classes.\n", classList.size());
+
+        System.out.println("+---------------------------------------------------------------------------------------+");
+        for (Class<?> aClass : classList) {
+            DataSourceORM tableAnnotation = aClass.getAnnotation(DataSourceORM.class);
+
+            System.out.printf("Table Name <<--- %s --->>\n", tableAnnotation.Schema() + "." + tableAnnotation.TableName());
+            //if (tableExists(tableAnnotation.Schema() + "." + tableAnnotation.TableName())) {
+                createTable(aClass);
+            //}
+        }
+    }
+
+    boolean tableExists(String tableName) throws SQLException {
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+            DatabaseMetaData meta = conn.getMetaData();
+            ResultSet resultSet = meta.getTables(null, null, tableName, new String[]{"TABLE"});
+            return resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public <T> void createTable(Class<T> newData) {
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-            DataSourceORM tableAnnotation = newUser.getAnnotation(DataSourceORM.class);
+            DataSourceORM tableAnnotation = newData.getAnnotation(DataSourceORM.class);
             String tableName = tableAnnotation.TableName();
             String schema = tableAnnotation.Schema();
-            List<Field> fields = ReflectionORM.getFieldNamesAndValues(newUser);
+            List<Field> fields = ReflectionORM.getFieldNamesAndValues(newData);
 
             StringBuilder sql = new StringBuilder();
             sql.append(" CREATE TABLE ").append(schema).append(".").append(tableName).append(" ( ");

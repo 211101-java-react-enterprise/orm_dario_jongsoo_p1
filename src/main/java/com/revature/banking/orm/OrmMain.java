@@ -4,7 +4,10 @@ import com.revature.banking.orm.models.AppUserORM;
 import com.revature.banking.orm.models.BankAccountORM;
 import com.revature.banking.orm.utils.CrudORM;
 import com.revature.banking.orm.utils.ReflectionORM;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,15 +18,26 @@ public class OrmMain {
     CrudORM crudORM = new CrudORM();
 
     public void startOrm() {
-        System.out.println("fdsaljdas");
-        //ReflectionORM.getClassesInPackage();
-
+        System.out.println("ORM starting...");
         //testCreate();
-        //testInsert();
+        testInsert();
         //testRead();
         //testUdate();
-        testDelete();
+        //testDelete();
+        //testCreateAllTablesWithDataSourceORM();
+    }
 
+    public void testCreateAllTablesWithDataSourceORM() {
+        try {
+            crudORM.testCreateAllTablesWithDataSourceORM();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void testCreate() {
+        //CrudORM.createTable(AppUserORM.class);
+        crudORM.createTable(BankAccountORM.class);
     }
 
     public void testDelete() {
@@ -72,11 +86,6 @@ public class OrmMain {
         for (AppUserORM appUserORM : appUserORMList) {
             System.out.println(appUserORM);
         }
-    }
-
-    public void testCreate() {
-        //CrudORM.createTable(AppUserORM.class);
-        crudORM.createTable(BankAccountORM.class);
     }
 
     public void testInsert() {

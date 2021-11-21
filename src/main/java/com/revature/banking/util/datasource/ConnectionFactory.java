@@ -1,11 +1,11 @@
 package com.revature.banking.util.datasource;
 
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 /*
  * Singleton Design Pattern
@@ -33,7 +33,16 @@ public class ConnectionFactory {
 
     private ConnectionFactory() {
         try {
-            props.load(new FileReader("src/main/resources/db.properties"));
+            try (InputStream inputStream = getClass().getResourceAsStream("/db.properties")) {
+                assert inputStream != null;
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+                    props.load(reader);
+    //                String contents = reader.lines()
+    //                        .collect(Collectors.joining(System.lineSeparator()));
+    //                System.out.println(contents);
+                }
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }

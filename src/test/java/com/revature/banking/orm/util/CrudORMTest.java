@@ -1,4 +1,4 @@
-package com.revature.banking.services;
+package com.revature.banking.orm.util;
 
 import com.revature.banking.daos.BankDAO;
 import com.revature.banking.exceptions.AuthorizationException;
@@ -7,6 +7,8 @@ import com.revature.banking.exceptions.ResourcePersistenceException;
 import com.revature.banking.models.AppUser;
 import com.revature.banking.models.BankAccount;
 import com.revature.banking.models.BankTransaction;
+import com.revature.banking.services.BankService;
+import com.revature.banking.services.UserService;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,7 +19,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 
-public class BankServiceTest {
+public class CrudORMTest {
 
     UserService mockUserService;
     BankDAO mockBankDAO;

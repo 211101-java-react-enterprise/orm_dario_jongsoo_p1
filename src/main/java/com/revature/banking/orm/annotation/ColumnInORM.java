@@ -21,4 +21,5 @@ public @interface ColumnInORM {
 
     String Check() default "";
 
+    String FOREIGN() default "";
 }

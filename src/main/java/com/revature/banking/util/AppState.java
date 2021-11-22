@@ -65,7 +65,7 @@ public class AppState {
 
         try {
             OrmMain ormMain = new OrmMain();
-            ormMain.startOrm();
+            ormMain.startORM();
         } catch (Exception e) {
             e.printStackTrace();
         }

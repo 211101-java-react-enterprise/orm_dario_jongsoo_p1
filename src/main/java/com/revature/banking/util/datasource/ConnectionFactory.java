@@ -32,17 +32,15 @@ public class ConnectionFactory {
     }
 
     private ConnectionFactory() {
-        try {
-            try (InputStream inputStream = getClass().getResourceAsStream("/db.properties")) {
-                assert inputStream != null;
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-                    props.load(reader);
-    //                String contents = reader.lines()
-    //                        .collect(Collectors.joining(System.lineSeparator()));
-    //                System.out.println(contents);
-                }
-            }
 
+        try (InputStream inputStream = getClass().getResourceAsStream("/db4orm.properties")) {
+            assert inputStream != null;
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+                props.load(reader);
+                //                String contents = reader.lines()
+                //                        .collect(Collectors.joining(System.lineSeparator()));
+                //                System.out.println(contents);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

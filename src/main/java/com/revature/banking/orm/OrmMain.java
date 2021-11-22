@@ -18,6 +18,7 @@ public class OrmMain {
         System.out.println("ORM starting...");
 
         // --------------------------------------
+        // include the ORM jar in your project.
         // To use the ORM, initialize ORM first.
         crudORM = new CrudORM(this);
         // --------------------------------------

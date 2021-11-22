@@ -19,6 +19,11 @@ import java.util.stream.Collectors;
 public class CrudORM {
 
     protected Logger logger = LogManager.getLogger();
+    public InitORM initORM;
+
+    public CrudORM(Object newData) {
+        initORM = new InitORM(newData);
+    }
 
     public static String convertTypeFromJaveToPostgresql(Class<?> col_type) {
 
@@ -232,8 +237,8 @@ public class CrudORM {
         return null;
     }
 
-    public <T> void testCreateAllTablesWithDataSourceORM() throws SQLException {
-        List<String> listClassesNames = ReflectionORM.getClassNamesInPackage("com.revature");
+    public <T> void testCreateAllOfTablesWithDataSourceORM() throws SQLException {
+        List<String> listClassesNames = ReflectionORM.getClassNamesInPackage(InitORM.packageNameInOrm);
         List<Class<?>> classList = listClassesNames.stream()
                 .map(ClassNameToClassMapper.getInstance())
                 .filter(clazz -> clazz.isAnnotationPresent(DataSourceORM.class))
@@ -248,7 +253,7 @@ public class CrudORM {
 
             System.out.printf("Table Name <<--- %s --->>\n", tableAnnotation.Schema() + "." + tableAnnotation.TableName());
             //if (tableExists(tableAnnotation.Schema() + "." + tableAnnotation.TableName())) {
-                createTable(aClass);
+            createTable(aClass);
             //}
         }
     }
@@ -264,6 +269,24 @@ public class CrudORM {
         return false;
     }
 
+    public boolean existTable(Connection conn, String tableName) throws SQLException {
+        DatabaseMetaData meta = conn.getMetaData();
+        ResultSet res = meta.getTables(null, null, tableName,
+                new String[]{"TABLE"});
+        if (res.next()) {
+//            System.out.println(
+//                    "   " + res.getString("TABLE_CAT")
+//                            + ", " + res.getString("TABLE_SCHEM")
+//                            + ", " + res.getString("TABLE_NAME")
+//                            + ", " + res.getString("TABLE_TYPE")
+//                            + ", " + res.getString("REMARKS"));
+            logger.info(tableName + " -- table already exists.");
+            return true;
+        }
+        logger.info(tableName + " -- table does not exist.");
+        return false;
+    }
+
     public <T> void createTable(Class<T> newData) {
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
@@ -271,6 +294,8 @@ public class CrudORM {
             String tableName = tableAnnotation.TableName();
             String schema = tableAnnotation.Schema();
             List<Field> fields = ReflectionORM.getFieldNamesAndValues(newData);
+
+            if (existTable(conn, tableName)) return;
 
             StringBuilder sql = new StringBuilder();
             sql.append(" CREATE TABLE ").append(schema).append(".").append(tableName).append(" ( ");
@@ -314,6 +339,15 @@ public class CrudORM {
                         sql.append(columnInORM.Check());
                         sql.append(")), ");
                     }
+                    if (!columnInORM.FOREIGN().equals("")) {
+                        sql.append("CONSTRAINT ").append(tableName).append("_").append(f.getName()).append("_");
+                        sql.append("fk FOREIGN KEY (");
+                        sql.append(f.getName());
+                        sql.append(") ");
+                        sql.append("REFERENCES ");
+                        sql.append(schema).append(".").append(columnInORM.FOREIGN());
+                        sql.append(", ");
+                    }
                 }
             }
             sql.setLength(sql.length() - 2);
@@ -327,7 +361,6 @@ public class CrudORM {
             if (rowsInserted != 0) {
                 System.out.println("wwww");
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }

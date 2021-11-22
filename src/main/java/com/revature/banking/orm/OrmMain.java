@@ -3,9 +3,6 @@ package com.revature.banking.orm;
 import com.revature.banking.orm.models.AppUserORM;
 import com.revature.banking.orm.models.BankAccountORM;
 import com.revature.banking.orm.utils.CrudORM;
-import com.revature.banking.orm.utils.ReflectionORM;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -15,21 +12,46 @@ import java.util.UUID;
 
 public class OrmMain {
 
-    CrudORM crudORM = new CrudORM();
+    CrudORM crudORM;
 
-    public void startOrm() {
+    public void startORM() {
         System.out.println("ORM starting...");
-        //testCreate();
-        testInsert();
-        //testRead();
-        //testUdate();
-        //testDelete();
-        //testCreateAllTablesWithDataSourceORM();
-    }
 
-    public void testCreateAllTablesWithDataSourceORM() {
+        // --------------------------------------
+        // To use the ORM, initialize ORM first.
+        crudORM = new CrudORM(this);
+        // --------------------------------------
+
+//        testCreate();
+//        testInsert();
+//        testRead();
+//        testUpdate();
+//        testDelete();
+        testCreateAllOfTablesWithDataSourceORM();
+
+    }
+/*
+    -- database credential
+    src/main/resources/db.properties
+        url=jdbc:postgresql://your_hosting_server_url:port_number/postgres?currentSchema=banking
+        username=postgres
+        password=xxxxxxxxxx
+
+    -- declare a class as a target to be made as a table in the database
+    @DataSourceORM(TableName = "app_users", Schema = "banking")
+
+    -- column declaration
+    @ColumnInORM(Constraint = "NOT NULL", Size=5, DefaultValue ="" , PRIMARY = "Y", UNIQUE = "Y", ForeignKey={"",""}, Check="")
+
+    -- To use the ORM, initialize ORM first.
+    crudORM = new CrudORM(this);
+
+*/
+
+    // Create all tables of class under root package which are declared with an annotation of @DataSourceORM
+    public void testCreateAllOfTablesWithDataSourceORM() {
         try {
-            crudORM.testCreateAllTablesWithDataSourceORM();
+            crudORM.testCreateAllOfTablesWithDataSourceORM();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -54,7 +76,7 @@ public class OrmMain {
         System.out.println(appUserORM);
     }
 
-    public void testUdate() {
+    public void testUpdate() {
         AppUserORM newUser = new AppUserORM("valid", "valid", "valid", "valid", "valid");
 
         Map<String, Map<String, String>> whereOderBy = new HashMap<>();
@@ -78,7 +100,7 @@ public class OrmMain {
         Map<String, Map<String, String>> whereOderBy = new HashMap<>();
 
         Map<String, String> where = new HashMap<>();
-        where.put("first_name", "valid_2");
+        where.put("first_name", "valid");
         whereOderBy.put("where", where);
 
         AppUserORM a = new AppUserORM();
@@ -89,11 +111,11 @@ public class OrmMain {
     }
 
     public void testInsert() {
-        AppUserORM testClass = new AppUserORM("valid", "valid", "valid", "valid", "valid");
+        //AppUserORM testClass = new AppUserORM("valid", "valid", "valid", "valid", "valid");
         //AppUserORM testClass = new AppUserORM("valid_2", "valid_2", "valid_2", "valid_2", "valid_2");
-        testClass.setUser_id(UUID.randomUUID().toString());
-//        BankAccountORM testClass = new BankAccountORM("valid_2", "valid_2", "valid_2", 7.77, "valid_2");
-//        testClass.setBank_account_id(UUID.randomUUID().toString());
+        //testClass.setUser_id(UUID.randomUUID().toString());
+        BankAccountORM testClass = new BankAccountORM("valid_2", "valid_2", "valid_2", 7.77, "valid_2");
+        testClass.setBank_account_id(UUID.randomUUID().toString());
 
         crudORM.insertTable(testClass);
     }

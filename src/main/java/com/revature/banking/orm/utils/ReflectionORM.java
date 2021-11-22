@@ -34,7 +34,8 @@ public class ReflectionORM {
 
     public static void getClassesInPackage() {
 
-        List<String> listClassesNames = getClassNamesInPackage("com.revature");
+        //List<String> listClassesNames = getClassNamesInPackage("com.revature");
+        List<String> listClassesNames = getClassNamesInPackage(InitORM.packageNameInOrm);
         List<Class<?>> classList = listClassesNames.stream()
                 .map(ClassNameToClassMapper.getInstance())
                 .filter(clazz -> clazz.isAnnotationPresent(DataSourceORM.class))

@@ -1,20 +1,51 @@
-/*
+public class ClientOrmMain {
 
-*/
-public class ClientORM {
-
-    CrudORM crudORM = new CrudORM();
+    CrudORM crudORM;
 
     public static void main(String[] args) {
-
-        ClientORM clientORM = new ClientORM();
-
-        clientORM.testRead();
+        ClientOrmMain clientOrmMain = new ClientOrmMain();
+        clientOrmMain.startORM();
     }
 
-    public void testCreateAllTablesWithDataSourceORM() {
+    public void startORM() {
+        System.out.println("ORM starting...");
+
+        // --------------------------------------
+        // include the ORM jar in your project.
+        // To use the ORM, initialize ORM first.
+        crudORM = new CrudORM(this);
+        // --------------------------------------
+
+//        testCreate();
+//        testInsert();
+//        testRead();
+//        testUpdate();
+//        testDelete();
+testCreateAllOfTablesWithDataSourceORM();
+
+    }
+/*
+-- database credential
+src/main/resources/db.properties
+url=jdbc:postgresql://your_hosting_server_url:port_number/postgres?currentSchema=banking
+username=postgres
+password=xxxxxxxxxx
+
+    -- declare a class as a target to be made as a table in the database
+    @DataSourceORM(TableName = "app_users", Schema = "banking")
+
+    -- column declaration
+    @ColumnInORM(Constraint = "NOT NULL", Size=5, DefaultValue ="" , PRIMARY = "Y", UNIQUE = "Y", ForeignKey={"",""}, Check="")
+
+    -- To use the ORM, initialize ORM first.
+    crudORM = new CrudORM(this);
+
+*/
+
+    // Create all tables of class under root package which are declared with an annotation of @DataSourceORM
+    public void testCreateAllOfTablesWithDataSourceORM() {
         try {
-            crudORM.testCreateAllTablesWithDataSourceORM();
+            crudORM.testCreateAllOfTablesWithDataSourceORM();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -39,7 +70,7 @@ public class ClientORM {
         System.out.println(appUserORM);
     }
 
-    public void testUdate() {
+    public void testUpdate() {
         AppUserORM newUser = new AppUserORM("valid", "valid", "valid", "valid", "valid");
 
         Map<String, Map<String, String>> whereOderBy = new HashMap<>();
@@ -63,7 +94,7 @@ public class ClientORM {
         Map<String, Map<String, String>> whereOderBy = new HashMap<>();
 
         Map<String, String> where = new HashMap<>();
-        where.put("first_name", "valid_2");
+        where.put("first_name", "valid");
         whereOderBy.put("where", where);
 
         AppUserORM a = new AppUserORM();
@@ -74,9 +105,11 @@ public class ClientORM {
     }
 
     public void testInsert() {
-        AppUserORM testClass = new AppUserORM("valid", "valid", "valid", "valid", "valid");
+        //AppUserORM testClass = new AppUserORM("valid", "valid", "valid", "valid", "valid");
         //AppUserORM testClass = new AppUserORM("valid_2", "valid_2", "valid_2", "valid_2", "valid_2");
-        testClass.setUser_id(UUID.randomUUID().toString());
+        //testClass.setUser_id(UUID.randomUUID().toString());
+        BankAccountORM testClass = new BankAccountORM("valid_2", "valid_2", "valid_2", 7.77, "valid_2");
+        testClass.setBank_account_id(UUID.randomUUID().toString());
 
         crudORM.insertTable(testClass);
     }

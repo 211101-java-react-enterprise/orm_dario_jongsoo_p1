@@ -26,7 +26,7 @@ testCreateAllOfTablesWithDataSourceORM();
     }
 /*
 -- database credential
-src/main/resources/db.properties
+src/main/resources/db4orm.properties
 url=jdbc:postgresql://your_hosting_server_url:port_number/postgres?currentSchema=banking
 username=postgres
 password=xxxxxxxxxx

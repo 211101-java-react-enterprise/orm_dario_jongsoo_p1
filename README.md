@@ -1,17 +1,54 @@
-public class ClientOrmMain {
+/*
+< How to use the ORM >
+
+    -- include the ORM jar in the project.
+        orm_dario_jongsoo_p1.jar
+
+        <dependency>
+            <groupId>com.revature</groupId>
+            <artifactId>testomjp1</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/orm_dario_jongsoo_p1.jar</systemPath>
+        </dependency>
+
+    -- database credential
+        src/main/resources/db4orm.properties
+            url=jdbc:postgresql://your_hosting_server_url:port_number/postgres?currentSchema=banking
+            username=postgres
+            password=xxxxxxxxxx
+
+    -- declare a class to be made as a table in the database
+        @DataSourceORM(TableName = "app_users", Schema = "banking")
+
+    -- column declaration
+        @ColumnInORM(Constraint = "NOT NULL", Size=5, DefaultValue ="" , PRIMARY = "Y", UNIQUE = "Y", ForeignKey={"",""}, Check="")
+
+    -- To use the ORM, initialize ORM first.
+        crudORM = new CrudORM(this);
+
+*/
+
+package com.revature.banking.orm;
+
+import com.revature.banking.orm.models.AppUserORM;
+import com.revature.banking.orm.models.BankAccountORM;
+import com.revature.banking.orm.utils.CrudORM;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+public class OrmMain {
 
     CrudORM crudORM;
-
-    public static void main(String[] args) {
-        ClientOrmMain clientOrmMain = new ClientOrmMain();
-        clientOrmMain.startORM();
-    }
 
     public void startORM() {
         System.out.println("ORM starting...");
 
         // --------------------------------------
-        // include the ORM jar in your project.
         // To use the ORM, initialize ORM first.
         crudORM = new CrudORM(this);
         // --------------------------------------
@@ -24,23 +61,6 @@ public class ClientOrmMain {
 testCreateAllOfTablesWithDataSourceORM();
 
     }
-/*
--- database credential
-src/main/resources/db4orm.properties
-url=jdbc:postgresql://your_hosting_server_url:port_number/postgres?currentSchema=banking
-username=postgres
-password=xxxxxxxxxx
-
-    -- declare a class as a target to be made as a table in the database
-    @DataSourceORM(TableName = "app_users", Schema = "banking")
-
-    -- column declaration
-    @ColumnInORM(Constraint = "NOT NULL", Size=5, DefaultValue ="" , PRIMARY = "Y", UNIQUE = "Y", ForeignKey={"",""}, Check="")
-
-    -- To use the ORM, initialize ORM first.
-    crudORM = new CrudORM(this);
-
-*/
 
     // Create all tables of class under root package which are declared with an annotation of @DataSourceORM
     public void testCreateAllOfTablesWithDataSourceORM() {

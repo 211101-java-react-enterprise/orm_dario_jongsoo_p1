@@ -6,3 +6,15 @@
 2021-11-22 13:16:54,871 [main] INFO  com.revature.banking.util.AppState - Successful application initialized!
 2021-11-22 13:16:55,429 [main] INFO  com.revature.banking.orm.utils.CrudORM - app_users -- table already exists.
 2021-11-22 13:16:55,737 [main] INFO  com.revature.banking.orm.utils.CrudORM - bank_accounts -- table already exists.
+2021-11-23 07:43:11,035 [main] INFO  com.revature.banking.util.AppState - Initializing application...
+2021-11-23 07:43:11,044 [main] INFO  com.revature.banking.util.AppState - Successful application initialized!
+2021-11-23 07:43:12,343 [main] INFO  com.revature.banking.orm.utils.CrudORM - app_users -- table already exists.
+2021-11-23 07:43:12,543 [main] INFO  com.revature.banking.orm.utils.CrudORM - bank_accounts -- table already exists.
+2021-11-23 08:52:30,197 [main] INFO  com.revature.banking.util.AppState - Initializing application...
+2021-11-23 08:52:30,204 [main] INFO  com.revature.banking.util.AppState - Successful application initialized!
+2021-11-23 08:52:31,016 [main] INFO  com.revature.banking.orm.utils.CrudORM - app_users -- table already exists.
+2021-11-23 08:52:31,244 [main] INFO  com.revature.banking.orm.utils.CrudORM - bank_accounts -- table already exists.
+2021-11-23 10:37:07,341 [main] INFO  com.revature.banking.util.AppState - Initializing application...
+2021-11-23 10:37:07,351 [main] INFO  com.revature.banking.util.AppState - Successful application initialized!
+2021-11-23 10:37:08,375 [main] INFO  com.revature.banking.orm.utils.CrudORM - app_users -- table already exists.
+2021-11-23 10:37:08,633 [main] INFO  com.revature.banking.orm.utils.CrudORM - bank_accounts -- table already exists.

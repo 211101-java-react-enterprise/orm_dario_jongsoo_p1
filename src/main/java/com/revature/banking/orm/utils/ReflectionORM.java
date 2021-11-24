@@ -1,21 +1,14 @@
 package com.revature.banking.orm.utils;
 
-import bsh.EvalError;
-import bsh.Interpreter;
+
 import com.revature.banking.orm.annotation.ColumnInORM;
 import com.revature.banking.orm.annotation.DataSourceORM;
-import com.revature.banking.orm.models.AppUserORM;
-import com.revature.banking.util.datasource.ConnectionFactory;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.io.File;
 import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class ReflectionORM {

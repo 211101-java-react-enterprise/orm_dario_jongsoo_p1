@@ -1,12 +1,9 @@
 package com.revature.banking.orm.utils;
 
-import com.revature.banking.orm.connection.ConnectionPoolORM;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.sql.SQLException;
 import java.util.Properties;
 
 public class InitORM {
@@ -70,13 +67,6 @@ public class InitORM {
         }
 
         packageNameInOrm = pns[0];
-    }
-
-    public void initConnectionPool() throws SQLException {
-        ConnectionPoolORM connectionPool = ConnectionPoolORM
-                .create("jdbc:postgresql://java-react-enterprise-211101.c0utmrzxqcan.us-east-1.rds.amazonaws.com:5432/postgres?currentSchema=banking", "postgres", "17641764");
-
-        connectionPool.getConnection();
     }
 
     public String paakageInfoInMETA() {

@@ -1,6 +1,6 @@
 package com.revature.banking.util;
 
-import com.revature.banking.util.datasource.ConnectionFactory;
+import com.revature.banking.orm.utils.ConnectionFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,5 +17,4 @@ public class ConnectionFactoryTest {
             e.printStackTrace();
         }
     }
-
 }

@@ -1,5 +1,5 @@
 /*
-    < How to use the ORM >
+**< How to use the ORM >**
 
     -- include the ORM jar in the project.
         orm_dario_jongsoo_p1.jar
@@ -13,7 +13,7 @@
         </dependency>
 
     -- database credential
-        src/main/resources/db4orm.properties
+        src/main/resources/db.properties
             url=jdbc:postgresql://your_hosting_server_url:port_number/postgres?currentSchema=banking
             username=postgres
             password=xxxxxxxxxx
@@ -28,11 +28,9 @@
         crudORM = new CrudORM(this);
 
 */
-
 package com.revature.banking.orm;
 
 import com.revature.banking.orm.models.AppUserORM;
-import com.revature.banking.orm.models.BankAccountORM;
 import com.revature.banking.orm.utils.CrudORM;
 
 import java.sql.SQLException;
@@ -53,27 +51,27 @@ public class OrmMain {
         crudORM = new CrudORM(this);
         // --------------------------------------
 
-//        testCreate();
+//       testCreate();
 //        testInsert();
 //        testRead();
 //        testUpdate();
-//        testDelete();
-        testCreateAllOfTablesWithDataSourceORM();
+        testDelete();
+//        testCreateAllOfTablesWithDataSourceORM();
 
     }
 
     // Create all tables of class under root package which are declared with an annotation of @DataSourceORM
     public void testCreateAllOfTablesWithDataSourceORM() {
         try {
-            crudORM.testCreateAllOfTablesWithDataSourceORM();
+            crudORM.createAllOfTablesWithDataSourceORM();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public void testCreate() {
-        //CrudORM.createTable(AppUserORM.class);
-        crudORM.createTable(BankAccountORM.class);
+        crudORM.createTable(AppUserORM.class);
+        //crudORM.createTable(BankAccountORM.class);
     }
 
     public void testDelete() {
@@ -125,12 +123,12 @@ public class OrmMain {
     }
 
     public void testInsert() {
-        //AppUserORM testClass = new AppUserORM("valid", "valid", "valid", "valid", "valid");
-        //AppUserORM testClass = new AppUserORM("valid_2", "valid_2", "valid_2", "valid_2", "valid_2");
-        //testClass.setUser_id(UUID.randomUUID().toString());
-        BankAccountORM testClass = new BankAccountORM("valid_2", "valid_2", "valid_2", 7.77, "valid_2");
-        testClass.setBank_account_id(UUID.randomUUID().toString());
+        AppUserORM testClass = new AppUserORM("valid", "valid", "valid", "valid", "valid");
+//        AppUserORM testClass = new AppUserORM("valid_2", "valid_2", "valid_2", "valid_2", "valid_2");
+        testClass.setUser_id(UUID.randomUUID().toString());
+//        BankAccountORM testClass = new BankAccountORM("valid_2", "valid_2", "valid_2", 7.77, "valid_2");
+//        testClass.setBank_account_id(UUID.randomUUID().toString());
 
-        crudORM.insertTable(testClass);
+        boolean rst = crudORM.insertTable(testClass);
     }
 }

@@ -1,12 +1,12 @@
 package com.revature.banking.orm.models;
 
+
 import com.revature.banking.orm.annotation.ColumnInORM;
 import com.revature.banking.orm.annotation.DataSourceORM;
 import com.revature.banking.orm.annotation.NotIntoDabase;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Objects;
 
 @DataSourceORM(TableName = "app_users", Schema = "banking")
@@ -18,6 +18,7 @@ public class AppUserORM {
     private String user_id;
     @ColumnInORM(Constraint = "NOT NULL", Size = 25, Check = "(first_name)::text <> ''::text")
     private String first_name;
+
     @ColumnInORM(Constraint = "NOT NULL", Size = 25, Check = "(last_name)::text <> ''::text")
     private String last_name;
     @ColumnInORM(Constraint = "NOT NULL", Size = 255, UNIQUE = "Y", Check = "(email)::text <> ''::text")

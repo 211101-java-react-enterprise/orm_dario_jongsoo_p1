@@ -1,12 +1,11 @@
 package com.revature.banking;
 
-import com.revature.banking.util.AppState;
+import com.revature.banking.orm.OrmMain;
 
 public class BankingDriver {
 
     public static void main(String[] args) {
-        AppState app = new AppState();
-        //app.startup();
-        app.startOrm();
+        OrmMain ormMain = new OrmMain();
+        ormMain.startORM();
     }
 }

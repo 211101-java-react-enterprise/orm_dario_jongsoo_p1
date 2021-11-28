@@ -1,4 +1,4 @@
-package com.revature.banking.util.datasource;
+package com.revature.banking.orm.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,7 +35,7 @@ public class ConnectionFactory {
 
     private ConnectionFactory() {
 
-        try (InputStream inputStream = getClass().getResourceAsStream("/db4orm.properties")) {
+        try (InputStream inputStream = getClass().getResourceAsStream("/db.properties")) {
             assert inputStream != null;
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
                 props.load(reader);

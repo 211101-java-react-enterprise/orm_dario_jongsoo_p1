@@ -3,17 +3,18 @@ package com.revature.banking.orm.utils;
 import com.revature.banking.orm.annotation.ColumnInORM;
 import com.revature.banking.orm.annotation.DataSourceORM;
 import com.revature.banking.orm.annotation.NotIntoDabase;
-import com.revature.banking.util.datasource.ConnectionFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URISyntaxException;
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class CrudORM {
@@ -37,249 +38,11 @@ public class CrudORM {
         return null;
     }
 
-    public <T> List<T> readTable(T newData, Map<String, Map<String, String>> whereOderBy, Class<T> cls) {
-        List<T> appUserORMList = new LinkedList<>();
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-            Class<?> aClass = newData.getClass();
-            DataSourceORM tableAnnotation = aClass.getAnnotation(DataSourceORM.class);
-            String tableName = tableAnnotation.TableName();
-            String schema = tableAnnotation.Schema();
-            List<Field> fields = ReflectionORM.getFieldNamesAndValues(aClass);
-
-            StringBuilder sql = new StringBuilder();
-            sql.append(" select * from ").append(schema).append(".").append(tableName).append(" ");
-
-            if (whereOderBy.containsKey("where") && whereOderBy.get("where").size() > 0) {
-                sql.append("where ");
-                for (Map.Entry<String, String> where : whereOderBy.get("where").entrySet()) {
-                    sql.append(where.getKey()).append(" = '").append(where.getValue()).append("', ");
-                }
-                sql.setLength(sql.length() - 2);
-            }
-            if (whereOderBy.containsKey("oderBy") && whereOderBy.get("oderBy").size() > 0) {
-                for (Map.Entry<String, String> cwo : whereOderBy.get("oderBy").entrySet()) {
-                    sql.append(cwo.getKey()).append(" ").append(cwo.getValue()).append(", ");
-                }
-                sql.setLength(sql.length() - 2);
-            }
-            sql.append(" ; ");
-
-            logger.info(sql);
-
-            PreparedStatement pstmt = conn.prepareStatement(sql.toString());
-
-            ResultSet rs = pstmt.executeQuery();
-
-            ScriptEngine engine = new ScriptEngineManager().getEngineByName("beanshell");
-            String CapitalFirst = "";
-            while (rs.next()) {
-                T appEntityORM = cls.newInstance();
-                // ------------ values real
-                for (Field f : fields) {
-                    CapitalFirst = f.getName().substring(0, 1).toUpperCase() + f.getName().substring(1);
-                    engine.put("appUserORM", appEntityORM);
-
-                    if (f.getType().isAssignableFrom(LocalDateTime.class)) {
-                        engine.eval("appUserORM.set" + CapitalFirst + "(\"" + rs.getTimestamp(f.getName()).toString().substring(0, 19) + "\");");
-                    } else {
-                        engine.eval("appUserORM.set" + CapitalFirst + "(\"" + rs.getString(f.getName()) + "\");");
-                    }
-                }
-                appUserORMList.add(appEntityORM);
-            }
-        } catch (SQLException | ScriptException | InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return appUserORMList;
-    }
-
-    public <T> T updateTable(T newData, Map<String, Map<String, String>> colsWhereOderBy) {
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-
-            Class<?> aClass = newData.getClass();
-            DataSourceORM tableAnnotation = aClass.getAnnotation(DataSourceORM.class);
-            String tableName = tableAnnotation.TableName();
-            String schema = tableAnnotation.Schema();
-            List<Field> fields = ReflectionORM.getFieldNamesAndValues(aClass);
-
-            StringBuilder sql = new StringBuilder();
-            sql.append("update ").append(schema).append(".").append(tableName).append(" set ");
-            // ------------ column
-            if (colsWhereOderBy.containsKey("cols") && colsWhereOderBy.get("cols").size() > 0) {
-                for (Map.Entry<String, String> col : colsWhereOderBy.get("cols").entrySet()) {
-                    sql.append(col.getKey()).append(" = '").append(col.getValue()).append("', ");
-                }
-                sql.setLength(sql.length() - 2);
-            }
-            // ------------ where
-            if (colsWhereOderBy.containsKey("where") && colsWhereOderBy.get("where").size() > 0) {
-                sql.append(" where ");
-                for (Map.Entry<String, String> wh : colsWhereOderBy.get("where").entrySet()) {
-                    sql.append(wh.getKey()).append(" = '").append(wh.getValue()).append("', ");
-                }
-                sql.setLength(sql.length() - 2);
-            }
-            sql.append(";");
-
-            PreparedStatement pstmt = conn.prepareStatement(sql.toString());
-
-            logger.info(sql);
-
-            int rowsInserted = pstmt.executeUpdate();
-
-            if (rowsInserted != 0) {
-                return newData;
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public <T> T deletTable(T newData, Map<String, Map<String, String>> colsWhereOderBy) {
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-
-            Class<?> aClass = newData.getClass();
-            DataSourceORM tableAnnotation = aClass.getAnnotation(DataSourceORM.class);
-            String tableName = tableAnnotation.TableName();
-            String schema = tableAnnotation.Schema();
-            List<Field> fields = ReflectionORM.getFieldNamesAndValues(aClass);
-
-            StringBuilder sql = new StringBuilder();
-            sql.append("delete from ").append(schema).append(".").append(tableName);
-            // ------------ where
-            if (colsWhereOderBy.containsKey("where") && colsWhereOderBy.get("where").size() > 0) {
-                sql.append(" where ");
-                for (Map.Entry<String, String> wh : colsWhereOderBy.get("where").entrySet()) {
-                    sql.append(wh.getKey()).append(" = '").append(wh.getValue()).append("', ");
-                }
-                sql.setLength(sql.length() - 2);
-            }
-            sql.append(";");
-
-            PreparedStatement pstmt = conn.prepareStatement(sql.toString());
-
-            logger.info(sql);
-
-            int rowsInserted = pstmt.executeUpdate();
-
-            if (rowsInserted != 0) {
-                return newData;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public <T> T insertTable(T newData) {
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-
-            Class<?> aClass = newData.getClass();
-            DataSourceORM tableAnnotation = aClass.getAnnotation(DataSourceORM.class);
-            String tableName = tableAnnotation.TableName();
-            String schema = tableAnnotation.Schema();
-            List<Field> fields = ReflectionORM.getFieldNamesAndValues(aClass);
-
-            // ------------
-            String sql = "insert into " + schema + "." + tableName + "( ";
-            // ------------ column
-            for (Field f : fields) {
-                if (f.getAnnotation(NotIntoDabase.class) != null)
-                    continue;
-                sql += f.getName() + ", ";
-            }
-            sql = sql.substring(0, sql.length() - 2);
-
-            // ------------ values placeholders
-            sql += ") values (";
-            for (Field f : fields) {
-                if (f.getAnnotation(NotIntoDabase.class) != null)
-                    continue;
-                sql += "?, ";
-            }
-            sql = sql.substring(0, sql.length() - 2);
-            sql += ")";
-
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-
-            // ------------ values real
-            ScriptEngine engine = new ScriptEngineManager().getEngineByName("beanshell");
-            for (int i = 0; i < fields.size(); i++) {
-                if (fields.get(i).getAnnotation(NotIntoDabase.class) != null)
-                    continue;
-                String fn = fields.get(i).getName();
-                String cap = fn.substring(0, 1).toUpperCase() + fn.substring(1);
-
-                engine.put("newData", newData);
-
-                if (fields.get(i).getType().isAssignableFrom(Double.class)) {
-                    engine.eval("Double d = newData.get" + cap + "();");
-                    pstmt.setDouble(i + 1, (Double) engine.get("d"));
-                } else {
-                    engine.eval("String r = newData.get" + cap + "();");
-                    pstmt.setString(i + 1, (String) engine.get("r"));
-                }
-            }
-
-            logger.info(sql);
-
-            int rowsInserted = pstmt.executeUpdate();
-
-            if (rowsInserted != 0) {
-                return newData;
-            }
-
-        } catch (SQLException | ScriptException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public <T> void testCreateAllOfTablesWithDataSourceORM() throws SQLException {
-        List<String> listClassesNames = ReflectionORM.getClassNamesInPackage(InitORM.packageNameInOrm);
-        List<Class<?>> classList = listClassesNames.stream()
-                .map(ClassNameToClassMapper.getInstance())
-                .filter(clazz -> clazz.isAnnotationPresent(DataSourceORM.class))
-                .collect(Collectors.toList());
-
-        System.out.println("+---------------------------------------------------------------------------------------+");
-        System.out.printf("Found <<--- %d --->> target classes.\n", classList.size());
-
-        System.out.println("+---------------------------------------------------------------------------------------+");
-        for (Class<?> aClass : classList) {
-            DataSourceORM tableAnnotation = aClass.getAnnotation(DataSourceORM.class);
-
-            System.out.printf("Table Name <<--- %s --->>\n", tableAnnotation.Schema() + "." + tableAnnotation.TableName());
-            //if (tableExists(tableAnnotation.Schema() + "." + tableAnnotation.TableName())) {
-            createTable(aClass);
-            //}
-        }
-    }
-
-    boolean tableExists(String tableName) throws SQLException {
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-            DatabaseMetaData meta = conn.getMetaData();
-            ResultSet resultSet = meta.getTables(null, null, tableName, new String[]{"TABLE"});
-            return resultSet.next();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public boolean existTable(Connection conn, String tableName) throws SQLException {
+    public boolean existsTable(Connection conn, String schema, String tableName) throws SQLException {
         DatabaseMetaData meta = conn.getMetaData();
-        ResultSet res = meta.getTables(null, null, tableName,
+        ResultSet res = meta.getTables(null, schema, tableName,
                 new String[]{"TABLE"});
         if (res.next()) {
-//            System.out.println(
-//                    "   " + res.getString("TABLE_CAT")
-//                            + ", " + res.getString("TABLE_SCHEM")
-//                            + ", " + res.getString("TABLE_NAME")
-//                            + ", " + res.getString("TABLE_TYPE")
-//                            + ", " + res.getString("REMARKS"));
             logger.info(tableName + " -- table already exists.");
             return true;
         }
@@ -295,7 +58,7 @@ public class CrudORM {
             String schema = tableAnnotation.Schema();
             List<Field> fields = ReflectionORM.getFieldNamesAndValues(newData);
 
-            if (existTable(conn, tableName)) return;
+            if (existsTable(conn, schema, tableName)) return;
 
             StringBuilder sql = new StringBuilder();
             sql.append(" CREATE TABLE ").append(schema).append(".").append(tableName).append(" ( ");
@@ -357,13 +120,237 @@ public class CrudORM {
 
             PreparedStatement pstmt = conn.prepareStatement(sql.toString());
             int rowsInserted = pstmt.executeUpdate();
-
             if (rowsInserted != 0) {
-                System.out.println("wwww");
+                logger.info("{} -- table created", tableName);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+    public <T> List<T> readTable(T newData, Map<String, Map<String, String>> whereOderBy, Class<T> cls) {
+        List<T> ormList = new LinkedList<>();
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+            Class<?> aClass = newData.getClass();
+            DataSourceORM tableAnnotation = aClass.getAnnotation(DataSourceORM.class);
+            String tableName = tableAnnotation.TableName();
+            String schema = tableAnnotation.Schema();
+            List<Field> fields = ReflectionORM.getFieldNamesAndValues(aClass);
+
+            StringBuilder sql = new StringBuilder();
+            sql.append(" select * from ").append(schema).append(".").append(tableName).append(" ");
+
+            if (whereOderBy.containsKey("where") && whereOderBy.get("where").size() > 0) {
+                sql.append("where ");
+                for (Map.Entry<String, String> where : whereOderBy.get("where").entrySet()) {
+                    sql.append(where.getKey()).append(" = '").append(where.getValue()).append("', ");
+                }
+                sql.setLength(sql.length() - 2);
+            }
+            if (whereOderBy.containsKey("oderBy") && whereOderBy.get("oderBy").size() > 0) {
+                for (Map.Entry<String, String> cwo : whereOderBy.get("oderBy").entrySet()) {
+                    sql.append(cwo.getKey()).append(" ").append(cwo.getValue()).append(", ");
+                }
+                sql.setLength(sql.length() - 2);
+            }
+            sql.append(" ; ");
+
+            logger.info(sql);
+
+            PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+
+            ResultSet rs = pstmt.executeQuery();
+
+            String CapitalFirst = "";
+            while (rs.next()) {
+                T appEntityORM = cls.newInstance();
+                // ------------ values real
+                for (Field f : fields) {
+                    CapitalFirst = f.getName().substring(0, 1).toUpperCase() + f.getName().substring(1);
+
+                    Method sumInstanceMethod = aClass.getMethod("set" + CapitalFirst, String.class);
+
+                    if (f.getType().isAssignableFrom(LocalDateTime.class)) {
+                        sumInstanceMethod.invoke(appEntityORM, rs.getTimestamp(f.getName()).toString().substring(0, 19));
+                    } else {
+                        sumInstanceMethod.invoke(appEntityORM, rs.getString(f.getName()));
+                    }
+                }
+
+                ormList.add(appEntityORM);
+            }
+        } catch (SQLException | InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return ormList;
+    }
+
+    public <T> T updateTable(T newData, Map<String, Map<String, String>> colsWhereOderBy) {
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+            Class<?> aClass = newData.getClass();
+            DataSourceORM tableAnnotation = aClass.getAnnotation(DataSourceORM.class);
+            String tableName = tableAnnotation.TableName();
+            String schema = tableAnnotation.Schema();
+            List<Field> fields = ReflectionORM.getFieldNamesAndValues(aClass);
+
+            StringBuilder sql = new StringBuilder();
+            sql.append("update ").append(schema).append(".").append(tableName).append(" set ");
+            // ------------ column
+            if (colsWhereOderBy.containsKey("cols") && colsWhereOderBy.get("cols").size() > 0) {
+                for (Map.Entry<String, String> col : colsWhereOderBy.get("cols").entrySet()) {
+                    sql.append(col.getKey()).append(" = '").append(col.getValue()).append("', ");
+                }
+                sql.setLength(sql.length() - 2);
+            }
+            // ------------ where
+            if (colsWhereOderBy.containsKey("where") && colsWhereOderBy.get("where").size() > 0) {
+                sql.append(" where ");
+                for (Map.Entry<String, String> wh : colsWhereOderBy.get("where").entrySet()) {
+                    sql.append(wh.getKey()).append(" = '").append(wh.getValue()).append("', ");
+                }
+                sql.setLength(sql.length() - 2);
+            }
+            sql.append(";");
+
+            PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+
+            logger.info(sql);
+
+            int rowsInserted = pstmt.executeUpdate();
+            if (rowsInserted != 0) {
+                return newData;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public <T> T insertTable(T newData) {
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+            Class<?> aClass = newData.getClass();
+            DataSourceORM tableAnnotation = aClass.getAnnotation(DataSourceORM.class);
+            String tableName = tableAnnotation.TableName();
+            String schema = tableAnnotation.Schema();
+            List<Field> fields = ReflectionORM.getFieldNamesAndValues(aClass);
+
+            // ------------
+            StringBuilder sql = new StringBuilder("insert into " + schema + "." + tableName + "( ");
+            // ------------ column
+            for (Field f : fields) {
+                if (f.getAnnotation(NotIntoDabase.class) != null)
+                    continue;
+                sql.append(f.getName()).append(", ");
+            }
+            sql = new StringBuilder(sql.substring(0, sql.length() - 2));
+
+            // ------------ values placeholders
+            sql.append(") values (");
+            for (Field f : fields) {
+                if (f.getAnnotation(NotIntoDabase.class) != null)
+                    continue;
+                sql.append("?, ");
+            }
+            sql = new StringBuilder(sql.substring(0, sql.length() - 2));
+            sql.append(")");
+
+            PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+            // ------------ values real
+            for (int i = 0; i < fields.size(); i++) {
+                if (fields.get(i).getAnnotation(NotIntoDabase.class) != null)
+                    continue;
+
+                String fn = fields.get(i).getName();
+                String cap = fn.substring(0, 1).toUpperCase() + fn.substring(1);
+
+                Method sumInstanceMethod = aClass.getMethod("get" + cap);
+
+                if (fields.get(i).getType().isAssignableFrom(Double.class)) {
+                    pstmt.setDouble(i + 1, (Double) sumInstanceMethod.invoke(newData));
+                } else {
+                    pstmt.setString(i + 1, (String) sumInstanceMethod.invoke(newData));
+                }
+            }
+
+            logger.info(pstmt.toString());
+            System.out.println(pstmt.toString());
+
+            int rowsInserted = pstmt.executeUpdate();
+            if (rowsInserted != 0) {
+                return newData;
+            }
+
+        } catch (SQLException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public <T> T deletTable(T newData, Map<String, Map<String, String>> colsWhereOderBy) {
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+            Class<?> aClass = newData.getClass();
+            DataSourceORM tableAnnotation = aClass.getAnnotation(DataSourceORM.class);
+            String tableName = tableAnnotation.TableName();
+            String schema = tableAnnotation.Schema();
+            List<Field> fields = ReflectionORM.getFieldNamesAndValues(aClass);
+
+            StringBuilder sql = new StringBuilder();
+            sql.append("delete from ").append(schema).append(".").append(tableName);
+            // ------------ where
+            if (colsWhereOderBy.containsKey("where") && colsWhereOderBy.get("where").size() > 0) {
+                sql.append(" where ");
+                for (Map.Entry<String, String> wh : colsWhereOderBy.get("where").entrySet()) {
+                    sql.append(wh.getKey()).append(" = '").append(wh.getValue()).append("', ");
+                }
+                sql.setLength(sql.length() - 2);
+            }
+            sql.append(";");
+
+            PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+
+            logger.info(sql);
+
+            int rowsInserted = pstmt.executeUpdate();
+            if (rowsInserted != 0) {
+                return newData;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public <T> void createAllOfTablesWithDataSourceORM(Class<T> aClass) throws SQLException, URISyntaxException {
+        System.out.println("Package Name in InitORM.packageNameInOrm = " + InitORM.packageNameInOrm);
+        List<String> listClassesNames = ReflectionORM.getClassNamesInPackage(aClass,InitORM.packageNameInOrm);
+        List<Class<?>> classList = listClassesNames.stream()
+                .map(ClassNameToClassMapper.getInstance())
+                .filter(clazz -> clazz.isAnnotationPresent(DataSourceORM.class))
+                .collect(Collectors.toList());
+        System.out.println(classList);
+        logger.info("+----------------------------------------------------------*");
+        logger.info("Found <<--- {} --->> target classes.\n", classList.size());
+        logger.info("+----------------------------------------------------------*");
+        for (Class<?> aClass1 : classList) {
+            DataSourceORM tableAnnotation = aClass1.getAnnotation(DataSourceORM.class);
+            System.out.printf("Table Name <<--- %s --->>\n", tableAnnotation.Schema() + "." + tableAnnotation.TableName());
+            createTable(aClass1);
+        }
+    }
+
+//    boolean tableExists(String tableName) throws SQLException {
+//        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+//            DatabaseMetaData meta = conn.getMetaData();
+//            ResultSet resultSet = meta.getTables(null, null, tableName, new String[]{"TABLE"});
+//            return resultSet.next();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return false;
+//    }
 
 }

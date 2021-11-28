@@ -1,12 +1,9 @@
 package com.revature.banking.orm.utils;
 
-import com.revature.banking.orm.connection.ConnectionPoolORM;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.sql.SQLException;
 import java.util.Properties;
 
 public class InitORM {
@@ -57,10 +54,10 @@ public class InitORM {
     public void initORMMethod(Object newData) {
         // this class package name
         String packageNameInMETA = paakageInfoInMETA();
-        System.out.println("packageNameInMETA Name = " + packageNameInMETA);
+        System.out.println("packageName In META Name = " + packageNameInMETA);
 
         String packageNameInThisClass = newData.getClass().getPackage().getName();
-        System.out.println("Package Name = " + packageNameInThisClass);
+        System.out.println("Package Name in the class = " + packageNameInThisClass);
 
         String[] pns;
         if (packageNameInMETA == null) {
@@ -70,13 +67,6 @@ public class InitORM {
         }
 
         packageNameInOrm = pns[0];
-    }
-
-    public void initConnectionPool() throws SQLException {
-        ConnectionPoolORM connectionPool = ConnectionPoolORM
-                .create("jdbc:postgresql://java-react-enterprise-211101.c0utmrzxqcan.us-east-1.rds.amazonaws.com:5432/postgres?currentSchema=banking", "postgres", "17641764");
-
-        connectionPool.getConnection();
     }
 
     public String paakageInfoInMETA() {

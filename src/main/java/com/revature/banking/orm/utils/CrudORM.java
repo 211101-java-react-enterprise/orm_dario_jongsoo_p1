@@ -6,11 +6,10 @@ import com.revature.banking.orm.annotation.NotIntoDabase;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URISyntaxException;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
@@ -130,7 +129,7 @@ public class CrudORM {
     }
 
     public <T> List<T> readTable(T newData, Map<String, Map<String, String>> whereOderBy, Class<T> cls) {
-        List<T> appUserORMList = new LinkedList<>();
+        List<T> ormList = new LinkedList<>();
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
             Class<?> aClass = newData.getClass();
             DataSourceORM tableAnnotation = aClass.getAnnotation(DataSourceORM.class);
@@ -162,48 +161,28 @@ public class CrudORM {
 
             ResultSet rs = pstmt.executeQuery();
 
-            ScriptEngine engine = new ScriptEngineManager().getEngineByName("beanshell");
             String CapitalFirst = "";
             while (rs.next()) {
                 T appEntityORM = cls.newInstance();
                 // ------------ values real
                 for (Field f : fields) {
                     CapitalFirst = f.getName().substring(0, 1).toUpperCase() + f.getName().substring(1);
-                    engine.put("appUserORM", appEntityORM);
 
-                    Method sumInstanceMethod = aClass.getMethod("set" + CapitalFirst);
+                    Method sumInstanceMethod = aClass.getMethod("set" + CapitalFirst, String.class);
 
                     if (f.getType().isAssignableFrom(LocalDateTime.class)) {
-                        //engine.eval("appUserORM.set" + CapitalFirst + "(\"" + rs.getTimestamp(f.getName()).toString().substring(0, 19) + "\");");
-                        sumInstanceMethod.invoke(rs.getTimestamp(f.getName()));
+                        sumInstanceMethod.invoke(appEntityORM, rs.getTimestamp(f.getName()).toString().substring(0, 19));
                     } else {
-                        sumInstanceMethod.invoke(rs.getString(f.getName()));
+                        sumInstanceMethod.invoke(appEntityORM, rs.getString(f.getName()));
                     }
                 }
 
-                // ------------ values real
-                for (int i = 0; i < fields.size(); i++) {
-                    if (fields.get(i).getAnnotation(NotIntoDabase.class) != null)
-                        continue;
-
-                    String fn = fields.get(i).getName();
-                    String cap = fn.substring(0, 1).toUpperCase() + fn.substring(1);
-
-                    Method sumInstanceMethod = aClass.getMethod("get" + cap);
-
-                    if (fields.get(i).getType().isAssignableFrom(Double.class)) {
-                        pstmt.setDouble(i + 1, (Double) sumInstanceMethod.invoke(newData));
-                    } else {
-                        pstmt.setString(i + 1, (String) sumInstanceMethod.invoke(newData));
-                    }
-                }
-
-                appUserORMList.add(appEntityORM);
+                ormList.add(appEntityORM);
             }
         } catch (SQLException | InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }
-        return appUserORMList;
+        return ormList;
     }
 
     public <T> T updateTable(T newData, Map<String, Map<String, String>> colsWhereOderBy) {
@@ -249,7 +228,7 @@ public class CrudORM {
         return null;
     }
 
-    public <T> boolean insertTable(T newData) {
+    public <T> T insertTable(T newData) {
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 
             Class<?> aClass = newData.getClass();
@@ -296,17 +275,18 @@ public class CrudORM {
                 }
             }
 
-            logger.info(sql.toString());
+            logger.info(pstmt.toString());
+            System.out.println(pstmt.toString());
 
             int rowsInserted = pstmt.executeUpdate();
             if (rowsInserted != 0) {
-                return true;
+                return newData;
             }
 
         } catch (SQLException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
-        return false;
+        return null;
     }
 
     public <T> T deletTable(T newData, Map<String, Map<String, String>> colsWhereOderBy) {
@@ -344,20 +324,21 @@ public class CrudORM {
         return null;
     }
 
-    public <T> void createAllOfTablesWithDataSourceORM() throws SQLException {
-        List<String> listClassesNames = ReflectionORM.getClassNamesInPackage(InitORM.packageNameInOrm);
+    public <T> void createAllOfTablesWithDataSourceORM(Class<T> aClass) throws SQLException, URISyntaxException {
+        System.out.println("Package Name in InitORM.packageNameInOrm = " + InitORM.packageNameInOrm);
+        List<String> listClassesNames = ReflectionORM.getClassNamesInPackage(aClass,InitORM.packageNameInOrm);
         List<Class<?>> classList = listClassesNames.stream()
                 .map(ClassNameToClassMapper.getInstance())
                 .filter(clazz -> clazz.isAnnotationPresent(DataSourceORM.class))
                 .collect(Collectors.toList());
-
+        System.out.println(classList);
         logger.info("+----------------------------------------------------------*");
         logger.info("Found <<--- {} --->> target classes.\n", classList.size());
         logger.info("+----------------------------------------------------------*");
-        for (Class<?> aClass : classList) {
-            DataSourceORM tableAnnotation = aClass.getAnnotation(DataSourceORM.class);
+        for (Class<?> aClass1 : classList) {
+            DataSourceORM tableAnnotation = aClass1.getAnnotation(DataSourceORM.class);
             System.out.printf("Table Name <<--- %s --->>\n", tableAnnotation.Schema() + "." + tableAnnotation.TableName());
-            createTable(aClass);
+            createTable(aClass1);
         }
     }
 

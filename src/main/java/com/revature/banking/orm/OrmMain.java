@@ -9,7 +9,7 @@
             <artifactId>testomjp1</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/orm_dario_jongsoo_p1.jar</systemPath>
+            <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/orm_dario_jongsoo_p1.jar</systemPath>
         </dependency>
 
     -- database credential
@@ -31,8 +31,10 @@
 package com.revature.banking.orm;
 
 import com.revature.banking.orm.models.AppUserORM;
+import com.revature.banking.orm.models.BankAccountORM;
 import com.revature.banking.orm.utils.CrudORM;
 
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -52,10 +54,10 @@ public class OrmMain {
         // --------------------------------------
 
 //       testCreate();
-//        testInsert();
+        testInsert();
 //        testRead();
 //        testUpdate();
-        testDelete();
+//        testDelete();
 //        testCreateAllOfTablesWithDataSourceORM();
 
     }
@@ -63,8 +65,10 @@ public class OrmMain {
     // Create all tables of class under root package which are declared with an annotation of @DataSourceORM
     public void testCreateAllOfTablesWithDataSourceORM() {
         try {
-            crudORM.createAllOfTablesWithDataSourceORM();
-        } catch (SQLException e) {
+            System.out.println(getClass().getResource("/"));
+
+            crudORM.createAllOfTablesWithDataSourceORM(this.getClass());
+        } catch (SQLException | URISyntaxException e) {
             e.printStackTrace();
         }
     }
@@ -101,7 +105,7 @@ public class OrmMain {
         where.put("first_name", "valid");
         whereOderBy.put("where", where);
 
-        AppUserORM a = new AppUserORM();
+//        AppUserORM a = new AppUserORM();
         AppUserORM appUserORM = crudORM.updateTable(newUser, whereOderBy);
         System.out.println(appUserORM);
     }
@@ -112,7 +116,7 @@ public class OrmMain {
         Map<String, Map<String, String>> whereOderBy = new HashMap<>();
 
         Map<String, String> where = new HashMap<>();
-        where.put("first_name", "valid");
+        where.put("first_name", "valid_2");
         whereOderBy.put("where", where);
 
         AppUserORM a = new AppUserORM();
@@ -123,12 +127,13 @@ public class OrmMain {
     }
 
     public void testInsert() {
-        AppUserORM testClass = new AppUserORM("valid", "valid", "valid", "valid", "valid");
+//        AppUserORM testClass = new AppUserORM("valid", "valid", "valid", "valid", "valid");
 //        AppUserORM testClass = new AppUserORM("valid_2", "valid_2", "valid_2", "valid_2", "valid_2");
-        testClass.setUser_id(UUID.randomUUID().toString());
-//        BankAccountORM testClass = new BankAccountORM("valid_2", "valid_2", "valid_2", 7.77, "valid_2");
-//        testClass.setBank_account_id(UUID.randomUUID().toString());
+//        testClass.setUser_id(UUID.randomUUID().toString());
+//        AppUserORM rst = crudORM.insertTable(testClass);
 
-        boolean rst = crudORM.insertTable(testClass);
+        BankAccountORM testClass = new BankAccountORM("valid_2", "valid_2", "valid_2", 7.77, "e7fcf1cc-aef4-4326-a422-5798221d05e0");
+        testClass.setBank_account_id(UUID.randomUUID().toString());
+        BankAccountORM rst = crudORM.insertTable(testClass);
     }
 }

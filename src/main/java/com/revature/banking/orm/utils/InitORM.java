@@ -54,10 +54,10 @@ public class InitORM {
     public void initORMMethod(Object newData) {
         // this class package name
         String packageNameInMETA = paakageInfoInMETA();
-        System.out.println("packageNameInMETA Name = " + packageNameInMETA);
+        System.out.println("packageName In META Name = " + packageNameInMETA);
 
         String packageNameInThisClass = newData.getClass().getPackage().getName();
-        System.out.println("Package Name = " + packageNameInThisClass);
+        System.out.println("Package Name in the class = " + packageNameInThisClass);
 
         String[] pns;
         if (packageNameInMETA == null) {

@@ -1,7 +1,7 @@
 /*
 **< How to use the ORM >**
 
-    -- include the ORM jar in the project.
+    -- Include the ORM jar in the project.
         orm_dario_jongsoo_p1.jar
 
         <dependency>
@@ -12,16 +12,16 @@
             <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/orm_dario_jongsoo_p1.jar</systemPath>
         </dependency>
 
-    -- database credential
+    -- Database credential
         src/main/resources/db.properties
             url=jdbc:postgresql://your_hosting_server_url:port_number/postgres?currentSchema=banking
             username=postgres
             password=xxxxxxxxxx
 
-    -- declare a class to be made as a table in the database
+    -- Declare a class to be made as a table in the database
         @DataSourceORM(TableName = "app_users", Schema = "banking")
 
-    -- column declaration
+    -- Column declaration
         @ColumnInORM(Constraint = "NOT NULL", Size=5, DefaultValue ="" , PRIMARY = "Y", UNIQUE = "Y", ForeignKey={"",""}, Check="")
 
     -- To use the ORM, initialize ORM first.
@@ -54,9 +54,9 @@ public class OrmMain {
         // --------------------------------------
 
 //       testCreate();
-        testInsert();
+//        testInsert();
 //        testRead();
-//        testUpdate();
+        testUpdate();
 //        testDelete();
 //        testCreateAllOfTablesWithDataSourceORM();
 
@@ -93,12 +93,12 @@ public class OrmMain {
     }
 
     public void testUpdate() {
-        AppUserORM newUser = new AppUserORM("valid", "valid", "valid", "valid", "valid");
+        AppUserORM newUser = new AppUserORM("valid", "valid-222", "valid", "valid", "valid");
 
         Map<String, Map<String, String>> whereOderBy = new HashMap<>();
 
         Map<String, String> cols = new HashMap<>();
-        cols.put("last_name", "valid-update");
+        cols.put("last_name", null);
         whereOderBy.put("cols", cols);
 
         Map<String, String> where = new HashMap<>();
@@ -127,13 +127,13 @@ public class OrmMain {
     }
 
     public void testInsert() {
-//        AppUserORM testClass = new AppUserORM("valid", "valid", "valid", "valid", "valid");
+        AppUserORM testClass = new AppUserORM("valid", "valid", "valid", "valid", "valid");
 //        AppUserORM testClass = new AppUserORM("valid_2", "valid_2", "valid_2", "valid_2", "valid_2");
-//        testClass.setUser_id(UUID.randomUUID().toString());
-//        AppUserORM rst = crudORM.insertTable(testClass);
+        testClass.setUser_id(UUID.randomUUID().toString());
+        AppUserORM rst = crudORM.insertTable(testClass);
 
-        BankAccountORM testClass = new BankAccountORM("valid_2", "valid_2", "valid_2", 7.77, "e7fcf1cc-aef4-4326-a422-5798221d05e0");
-        testClass.setBank_account_id(UUID.randomUUID().toString());
-        BankAccountORM rst = crudORM.insertTable(testClass);
+//        BankAccountORM testClass = new BankAccountORM("valid_2", "valid_2", "valid_2", 7.77, "e7fcf1cc-aef4-4326-a422-5798221d05e0");
+//        testClass.setBank_account_id(UUID.randomUUID().toString());
+//        BankAccountORM rst = crudORM.insertTable(testClass);
     }
 }

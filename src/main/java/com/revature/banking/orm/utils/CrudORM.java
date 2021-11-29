@@ -199,7 +199,16 @@ public class CrudORM {
             // ------------ column
             if (colsWhereOderBy.containsKey("cols") && colsWhereOderBy.get("cols").size() > 0) {
                 for (Map.Entry<String, String> col : colsWhereOderBy.get("cols").entrySet()) {
-                    sql.append(col.getKey()).append(" = '").append(col.getValue()).append("', ");
+
+                    String CapitalFirst = col.getKey().substring(0, 1).toUpperCase() + col.getKey().substring(1);
+                    Method sumInstanceMethod = aClass.getMethod("get" + CapitalFirst);
+
+                    if (sumInstanceMethod.getReturnType().isAssignableFrom(LocalDateTime.class) ||
+                            sumInstanceMethod.getReturnType().isAssignableFrom(Double.class)) {
+                        sql.append(col.getKey()).append(" = ").append(sumInstanceMethod.invoke(newData)).append(", ");
+                    } else {
+                        sql.append(col.getKey()).append(" = '").append(sumInstanceMethod.invoke(newData)).append("', ");
+                    }
                 }
                 sql.setLength(sql.length() - 2);
             }
@@ -222,7 +231,7 @@ public class CrudORM {
                 return newData;
             }
 
-        } catch (SQLException e) {
+        } catch (SQLException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
         return null;
@@ -326,7 +335,7 @@ public class CrudORM {
 
     public <T> void createAllOfTablesWithDataSourceORM(Class<T> aClass) throws SQLException, URISyntaxException {
         System.out.println("Package Name in InitORM.packageNameInOrm = " + InitORM.packageNameInOrm);
-        List<String> listClassesNames = ReflectionORM.getClassNamesInPackage(aClass,InitORM.packageNameInOrm);
+        List<String> listClassesNames = ReflectionORM.getClassNamesInPackage(aClass, InitORM.packageNameInOrm);
         List<Class<?>> classList = listClassesNames.stream()
                 .map(ClassNameToClassMapper.getInstance())
                 .filter(clazz -> clazz.isAnnotationPresent(DataSourceORM.class))

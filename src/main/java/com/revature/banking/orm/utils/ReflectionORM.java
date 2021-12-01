@@ -13,10 +13,8 @@ import java.util.Objects;
 
 public class ReflectionORM {
 
-    public static List<Field> getFieldNamesAndValues(Class<?> aClass) {
-
+    public static List<Field> getFieldNames(Class<?> aClass) {
         List<Field> fields = new LinkedList<>();
-
         for (Field field : aClass.getDeclaredFields()) {
             if (field.isAnnotationPresent(ColumnInORM.class)) {
                 fields.add(field);
@@ -58,12 +56,13 @@ public class ReflectionORM {
     public static <T> List<String> getClassNamesInPackage(Class<T> aClass, String packageName) throws URISyntaxException {
         if (Objects.requireNonNull(aClass.getResource("/")).toURI().toString().contains("WEB-INF")) {
             return getClassNamesInPackage_inner(2, aClass, "/", packageName);
-        }else{
+        } else {
             return getClassNamesInPackage_inner(1, aClass, "target/classes/", packageName);
         }
     }
 
-    public static <T> List<String> getClassNamesInPackage_inner(int cate, Class<T> aClass, String directory_root, String packageName) throws URISyntaxException {
+    public static <T> List<String> getClassNamesInPackage_inner(int cate, Class<T> aClass, String directory_root, String packageName)
+            throws URISyntaxException {
 
         List<String> classNames = new ArrayList<>();
         File packageDir;

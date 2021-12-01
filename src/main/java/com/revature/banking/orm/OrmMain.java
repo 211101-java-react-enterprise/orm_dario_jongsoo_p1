@@ -32,6 +32,7 @@ package com.revature.banking.orm;
 
 import com.revature.banking.orm.models.AppUserORM;
 import com.revature.banking.orm.models.BankAccountORM;
+import com.revature.banking.orm.models.Flashcard;
 import com.revature.banking.orm.utils.CrudORM;
 
 import java.net.URISyntaxException;
@@ -53,10 +54,10 @@ public class OrmMain {
         crudORM = new CrudORM(this);
         // --------------------------------------
 
-//       testCreate();
+        testCreate();
 //        testInsert();
 //        testRead();
-        testUpdate();
+//        testUpdate();
 //        testDelete();
 //        testCreateAllOfTablesWithDataSourceORM();
 
@@ -67,60 +68,61 @@ public class OrmMain {
         try {
             System.out.println(getClass().getResource("/"));
 
-            crudORM.createAllOfTablesWithDataSourceORM(this.getClass());
+            crudORM.createAllOfTablesWithDataSourceORM(this);
         } catch (SQLException | URISyntaxException e) {
             e.printStackTrace();
         }
     }
 
     public void testCreate() {
-        crudORM.createTable(AppUserORM.class);
-        //crudORM.createTable(BankAccountORM.class);
+//        crudORM.createTable(AppUserORM.class);
+//        crudORM.createTable(BankAccountORM.class);
+        crudORM.createTable(Flashcard.class);
     }
 
     public void testDelete() {
         AppUserORM newUser = new AppUserORM("valid", "valid", "valid", "valid", "valid");
 
-        Map<String, Map<String, String>> whereOderBy = new HashMap<>();
+        Map<String, Map<String, String>> whereOrderBy = new HashMap<>();
 
         Map<String, String> where = new HashMap<>();
         where.put("first_name", "valid");
-        whereOderBy.put("where", where);
+        whereOrderBy.put("where", where);
 
         AppUserORM a = new AppUserORM();
-        AppUserORM appUserORM = crudORM.deletTable(newUser, whereOderBy);
+        AppUserORM appUserORM = crudORM.deletTable(newUser, whereOrderBy);
         System.out.println(appUserORM);
     }
 
     public void testUpdate() {
         AppUserORM newUser = new AppUserORM("valid", "valid-222", "valid", "valid", "valid");
 
-        Map<String, Map<String, String>> whereOderBy = new HashMap<>();
+        Map<String, Map<String, String>> whereOrderBy = new HashMap<>();
 
         Map<String, String> cols = new HashMap<>();
         cols.put("last_name", null);
-        whereOderBy.put("cols", cols);
+        whereOrderBy.put("cols", cols);
 
         Map<String, String> where = new HashMap<>();
         where.put("first_name", "valid");
-        whereOderBy.put("where", where);
+        whereOrderBy.put("where", where);
 
 //        AppUserORM a = new AppUserORM();
-        AppUserORM appUserORM = crudORM.updateTable(newUser, whereOderBy);
+        AppUserORM appUserORM = crudORM.updateTable(newUser, whereOrderBy);
         System.out.println(appUserORM);
     }
 
     public void testRead() {
         AppUserORM newUser = new AppUserORM("valid", "valid", "valid", "valid", "valid");
 
-        Map<String, Map<String, String>> whereOderBy = new HashMap<>();
+        Map<String, Map<String, String>> whereOrderBy = new HashMap<>();
 
         Map<String, String> where = new HashMap<>();
         where.put("first_name", "valid_2");
-        whereOderBy.put("where", where);
+        whereOrderBy.put("where", where);
 
         AppUserORM a = new AppUserORM();
-        List<AppUserORM> appUserORMList = crudORM.readTable(newUser, whereOderBy, AppUserORM.class);
+        List<AppUserORM> appUserORMList = crudORM.readTable(newUser, whereOrderBy, AppUserORM.class);
         for (AppUserORM appUserORM : appUserORMList) {
             System.out.println(appUserORM);
         }

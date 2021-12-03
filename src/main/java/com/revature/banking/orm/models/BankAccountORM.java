@@ -23,9 +23,9 @@ public class BankAccountORM {
     private Double balance;
     @ColumnInORM(Constraint = "NOT NULL", Size = 255, FOREIGN = "app_users(user_id)", Check = "(creator_id)::text <> ''::text")
     private String creator_id;
-    @NotIntoDabase
-    @ColumnInORM(Constraint = "NOT NULL", DefaultValue = "LOCALTIMESTAMP")
-    private LocalDateTime date_added;
+//    @NotIntoDabase
+//    @ColumnInORM(Constraint = "NOT NULL", DefaultValue = "LOCALTIMESTAMP")
+//    private LocalDateTime date_added;
 
     public BankAccountORM() {
     }
@@ -98,26 +98,25 @@ public class BankAccountORM {
         this.creator_id = creator_id;
     }
 
-    public LocalDateTime getDate_added() {
-        return date_added;
-    }
-
-    public void setDate_added(String date_added) {
-        System.out.println(date_added);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSS");
-        this.date_added = LocalDateTime.parse(date_added, formatter);
-    }
+//    public LocalDateTime getDate_added() {
+//        return date_added;
+//    }
+//
+//    public void setDate_added(String date_added) {
+//        System.out.println(date_added);
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSS");
+//        this.date_added = LocalDateTime.parse(date_added, formatter);
+//    }
 
     @Override
     public String toString() {
-        return "BankAccountOrm{" +
+        return "BankAccountORM{" +
                 "bank_account_id='" + bank_account_id + '\'' +
                 ", account_name='" + account_name + '\'' +
                 ", account_number='" + account_number + '\'' +
                 ", account_type='" + account_type + '\'' +
                 ", balance=" + balance +
-                ", creator_id=" + creator_id +
-                ", date_added=" + date_added +
+                ", creator_id='" + creator_id + '\'' +
                 '}';
     }
 }

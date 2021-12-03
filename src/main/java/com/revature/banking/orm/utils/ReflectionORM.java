@@ -22,36 +22,6 @@ public class ReflectionORM {
         }
         return fields;
     }
-//
-//    public static void getClassesInPackage() {
-//
-//        //List<String> listClassesNames = getClassNamesInPackage("com.revature");
-//        List<String> listClassesNames = getClassNamesInPackage(InitORM.packageNameInOrm);
-//        List<Class<?>> classList = listClassesNames.stream()
-//                .map(ClassNameToClassMapper.getInstance())
-//                .filter(clazz -> clazz.isAnnotationPresent(DataSourceORM.class))
-//                .collect(Collectors.toList());
-//
-//        System.out.println("+---------------------------------------------------------------------------------------+");
-//        System.out.printf("Found <<--- %d --->> target classes.\n", classList.size());
-//
-//        System.out.println("+---------------------------------------------------------------------------------------+");
-//        for (Class<?> aClass : classList) {
-//            System.out.println("Running for: " + aClass.getName() + "\n");
-//
-//            System.out.println("+---------------------------------------------------------------------------------------+");
-//            DataSourceORM tableAnnotation = aClass.getAnnotation(DataSourceORM.class);
-//            System.out.printf("Table Name <<--- %s --->>\n", tableAnnotation.TableName());
-//
-//            List<Field> fields = getFieldNamesAndValues(aClass);
-//            System.out.println("+---------------------------------------------------------------------------------------+");
-//            System.out.print("Column Names :\n");
-//            for (Field f : fields) {
-//                System.out.println(f.getName());
-//            }
-//            //selectTable(aClass,fields );
-//        }
-//    }
 
     public static <T> List<String> getClassNamesInPackage(Class<T> aClass, String packageName) throws URISyntaxException {
         if (Objects.requireNonNull(aClass.getResource("/")).toURI().toString().contains("WEB-INF")) {

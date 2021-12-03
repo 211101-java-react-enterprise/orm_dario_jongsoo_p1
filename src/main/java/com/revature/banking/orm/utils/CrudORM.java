@@ -53,7 +53,7 @@ public class CrudORM {
     public <T> boolean createTable(Class<T> newData) {
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
             DataSourceORM tableAnnotation = newData.getAnnotation(DataSourceORM.class);
-            if( tableAnnotation == null){
+            if (tableAnnotation == null) {
                 return false;
             }
             String tableName = tableAnnotation.TableName();
@@ -129,12 +129,12 @@ public class CrudORM {
         return false;
     }
 
-    public <T> List<T> readTable(T newData, Map<String, Map<String, String>> whereOrderBy, Class<T> cls) {
+    public <T> List<T> readTable(T newData, Map<String, Map<String, String>> whereOrderBy,Class<T> cls) {
         List<T> ormList = new LinkedList<>();
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
             Class<?> aClass = newData.getClass();
             DataSourceORM tableAnnotation = aClass.getAnnotation(DataSourceORM.class);
-            if( tableAnnotation == null){
+            if (tableAnnotation == null) {
                 return null;
             }
             String tableName = tableAnnotation.TableName();
@@ -143,14 +143,14 @@ public class CrudORM {
 
             StringBuilder sql = new StringBuilder();
             sql.append(" select * from ").append(schema).append(".").append(tableName).append(" ");
-            if (whereOrderBy.containsKey("where") && whereOrderBy.get("where").size() > 0) {
+            if (whereOrderBy != null && whereOrderBy.containsKey("where") && whereOrderBy.get("where").size() > 0) {
                 sql.append("where ");
                 for (Map.Entry<String, String> where : whereOrderBy.get("where").entrySet()) {
-                    sql.append(where.getKey()).append(" = '").append(where.getValue()).append("', ");
+                    sql.append(where.getKey()).append(" = '").append(where.getValue()).append("' and ");
                 }
-                sql.setLength(sql.length() - 2);
+                sql.setLength(sql.length() - 4);
             }
-            if (whereOrderBy.containsKey("oderBy") && whereOrderBy.get("oderBy").size() > 0) {
+            if (whereOrderBy != null && whereOrderBy.containsKey("oderBy") && whereOrderBy.get("oderBy").size() > 0) {
                 for (Map.Entry<String, String> cwo : whereOrderBy.get("oderBy").entrySet()) {
                     sql.append(cwo.getKey()).append(" ").append(cwo.getValue()).append(", ");
                 }
@@ -158,27 +158,25 @@ public class CrudORM {
             }
             sql.append(" ; ");
             logger.info(sql);
+            System.out.println(sql);
             PreparedStatement pstmt = conn.prepareStatement(sql.toString());
             ResultSet rs = pstmt.executeQuery();
             String CapitalFirst = "";
             while (rs.next()) {
-                T appEntityORM = cls.newInstance();
+                T aResult = cls.newInstance(); // You cannot create an instance of a type parameter.
                 // ------------ values real
                 for (Field f : fields) {
                     CapitalFirst = f.getName().substring(0, 1).toUpperCase() + f.getName().substring(1);
-
                     Method aMethod = aClass.getMethod("set" + CapitalFirst, String.class);
-
                     if (f.getType().isAssignableFrom(LocalDateTime.class)) {
-                        aMethod.invoke(appEntityORM, rs.getTimestamp(f.getName()).toString().substring(0, 19));
+                        aMethod.invoke(aResult, rs.getTimestamp(f.getName()).toString().substring(0, 19));
                     } else {
-                        aMethod.invoke(appEntityORM, rs.getString(f.getName()));
+                        aMethod.invoke(aResult, rs.getString(f.getName()));
                     }
                 }
-                ormList.add(appEntityORM);
+                ormList.add(aResult);
             }
-        } catch (SQLException | InstantiationException | IllegalAccessException | NoSuchMethodException |
-                InvocationTargetException e) {
+        } catch (SQLException | IllegalAccessException | NoSuchMethodException | InvocationTargetException | InstantiationException e) {
             e.printStackTrace();
         }
         return ormList;
@@ -189,7 +187,7 @@ public class CrudORM {
 
             Class<?> aClass = newData.getClass();
             DataSourceORM tableAnnotation = aClass.getAnnotation(DataSourceORM.class);
-            if( tableAnnotation == null){
+            if (tableAnnotation == null) {
                 return null;
             }
             String tableName = tableAnnotation.TableName();
@@ -199,7 +197,7 @@ public class CrudORM {
             StringBuilder sql = new StringBuilder();
             sql.append("update ").append(schema).append(".").append(tableName).append(" set ");
             // ------------ column
-            if (colsWhereOrderBy.containsKey("cols") && colsWhereOrderBy.get("cols").size() > 0) {
+            if (colsWhereOrderBy != null && colsWhereOrderBy.containsKey("cols") && colsWhereOrderBy.get("cols").size() > 0) {
                 for (Map.Entry<String, String> col : colsWhereOrderBy.get("cols").entrySet()) {
 
                     String CapitalFirst = col.getKey().substring(0, 1).toUpperCase() + col.getKey().substring(1);
@@ -215,12 +213,12 @@ public class CrudORM {
                 sql.setLength(sql.length() - 2);
             }
             // ------------ where
-            if (colsWhereOrderBy.containsKey("where") && colsWhereOrderBy.get("where").size() > 0) {
+            if (colsWhereOrderBy != null && colsWhereOrderBy.containsKey("where") && colsWhereOrderBy.get("where").size() > 0) {
                 sql.append(" where ");
                 for (Map.Entry<String, String> wh : colsWhereOrderBy.get("where").entrySet()) {
-                    sql.append(wh.getKey()).append(" = '").append(wh.getValue()).append("', ");
+                    sql.append(wh.getKey()).append(" = '").append(wh.getValue()).append("' and ");
                 }
-                sql.setLength(sql.length() - 2);
+                sql.setLength(sql.length() - 4);
             }
             sql.append(";");
             PreparedStatement pstmt = conn.prepareStatement(sql.toString());
@@ -241,7 +239,7 @@ public class CrudORM {
 
             Class<?> aClass = newData.getClass();
             DataSourceORM tableAnnotation = aClass.getAnnotation(DataSourceORM.class);
-            if( tableAnnotation == null){
+            if (tableAnnotation == null) {
                 return null;
             }
             String tableName = tableAnnotation.TableName();
@@ -295,7 +293,7 @@ public class CrudORM {
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
             Class<?> aClass = newData.getClass();
             DataSourceORM tableAnnotation = aClass.getAnnotation(DataSourceORM.class);
-            if( tableAnnotation == null){
+            if (tableAnnotation == null) {
                 return null;
             }
             String tableName = tableAnnotation.TableName();
@@ -305,12 +303,12 @@ public class CrudORM {
             StringBuilder sql = new StringBuilder();
             sql.append("delete from ").append(schema).append(".").append(tableName);
             // ------------ where
-            if (colsWhereOrderBy.containsKey("where") && colsWhereOrderBy.get("where").size() > 0) {
+            if (colsWhereOrderBy != null && colsWhereOrderBy.containsKey("where") && colsWhereOrderBy.get("where").size() > 0) {
                 sql.append(" where ");
                 for (Map.Entry<String, String> wh : colsWhereOrderBy.get("where").entrySet()) {
-                    sql.append(wh.getKey()).append(" = '").append(wh.getValue()).append("', ");
+                    sql.append(wh.getKey()).append(" = '").append(wh.getValue()).append("' and ");
                 }
-                sql.setLength(sql.length() - 2);
+                sql.setLength(sql.length() - 4);
             }
             sql.append(";");
             PreparedStatement pstmt = conn.prepareStatement(sql.toString());
@@ -325,8 +323,8 @@ public class CrudORM {
         return null;
     }
 
-    public <T> void createAllOfTablesWithDataSourceORM(T newData) throws SQLException, URISyntaxException {
-        Class<?> aClass = newData.getClass();
+    public <T> void createAllOfTablesWithDataSourceORM(T newObject) throws SQLException, URISyntaxException {
+        Class<?> aClass = newObject.getClass();
         List<String> listClassesNames = ReflectionORM.getClassNamesInPackage(aClass, InitORM.packageNameInOrm);
         List<Class<?>> classList = listClassesNames.stream()
                 .map(ClassNameToClassMapper.getInstance())
@@ -342,16 +340,4 @@ public class CrudORM {
             createTable(aClass1);
         }
     }
-
-//    boolean tableExists(String tableName) throws SQLException {
-//        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-//            DatabaseMetaData meta = conn.getMetaData();
-//            ResultSet resultSet = meta.getTables(null, null, tableName, new String[]{"TABLE"});
-//            return resultSet.next();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return false;
-//    }
-
 }

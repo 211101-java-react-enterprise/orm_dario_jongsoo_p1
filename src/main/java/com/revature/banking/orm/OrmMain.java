@@ -54,9 +54,10 @@ public class OrmMain {
         crudORM = new CrudORM(this);
         // --------------------------------------
 
-        testCreate();
+//        testCreate();
 //        testInsert();
 //        testRead();
+        testReadAll();
 //        testUpdate();
 //        testDelete();
 //        testCreateAllOfTablesWithDataSourceORM();
@@ -76,8 +77,8 @@ public class OrmMain {
 
     public void testCreate() {
 //        crudORM.createTable(AppUserORM.class);
-//        crudORM.createTable(BankAccountORM.class);
-        crudORM.createTable(Flashcard.class);
+        crudORM.createTable(BankAccountORM.class);
+//        crudORM.createTable(Flashcard.class);
     }
 
     public void testDelete() {
@@ -112,30 +113,43 @@ public class OrmMain {
         System.out.println(appUserORM);
     }
 
+    public void testReadAll() {
+        AppUserORM newUser = new AppUserORM("valid", "valid", "valid", "valid", "valid");
+
+        Map<String, Map<String, String>> whereOrderBy = new HashMap<>();
+
+        AppUserORM a = new AppUserORM();
+        List<AppUserORM> appUserORMList = crudORM.readTable(newUser, whereOrderBy,AppUserORM.class);
+        for (AppUserORM appUserORM : appUserORMList) {
+            System.out.println(appUserORM);
+        }
+    }
+
     public void testRead() {
         AppUserORM newUser = new AppUserORM("valid", "valid", "valid", "valid", "valid");
 
         Map<String, Map<String, String>> whereOrderBy = new HashMap<>();
 
         Map<String, String> where = new HashMap<>();
-        where.put("first_name", "valid_2");
+        where.put("username", "a");
+        where.put("password", "a");
         whereOrderBy.put("where", where);
 
         AppUserORM a = new AppUserORM();
-        List<AppUserORM> appUserORMList = crudORM.readTable(newUser, whereOrderBy, AppUserORM.class);
+        List<AppUserORM> appUserORMList = crudORM.readTable(newUser, whereOrderBy,AppUserORM.class);
         for (AppUserORM appUserORM : appUserORMList) {
             System.out.println(appUserORM);
         }
     }
 
     public void testInsert() {
-        AppUserORM testClass = new AppUserORM("valid", "valid", "valid", "valid", "valid");
+//        AppUserORM testClass = new AppUserORM("valid", "valid", "valid", "valid", "valid");
 //        AppUserORM testClass = new AppUserORM("valid_2", "valid_2", "valid_2", "valid_2", "valid_2");
-        testClass.setUser_id(UUID.randomUUID().toString());
-        AppUserORM rst = crudORM.insertTable(testClass);
+//        testClass.setUser_id(UUID.randomUUID().toString());
+//        AppUserORM rst = crudORM.insertTable(testClass);
 
-//        BankAccountORM testClass = new BankAccountORM("valid_2", "valid_2", "valid_2", 7.77, "e7fcf1cc-aef4-4326-a422-5798221d05e0");
-//        testClass.setBank_account_id(UUID.randomUUID().toString());
-//        BankAccountORM rst = crudORM.insertTable(testClass);
+        BankAccountORM testClass = new BankAccountORM("valid_2", "valid_2", "valid_2", 7.77, "e7fcf1cc-aef4-4326-a422-5798221d05e0");
+        testClass.setBank_account_id(UUID.randomUUID().toString());
+        BankAccountORM rst = crudORM.insertTable(testClass);
     }
 }

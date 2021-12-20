@@ -6,7 +6,7 @@
 
         <dependency>
             <groupId>com.revature</groupId>
-            <artifactId>testomjp1</artifactId>
+            <artifactId>orm-dario-jongsoo</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/orm_dario_jongsoo_p1.jar</systemPath>
@@ -57,10 +57,10 @@ public class OrmMain {
 //        testCreate();
 //        testInsert();
 //        testRead();
-        testReadAll();
+//        testReadAll();
 //        testUpdate();
 //        testDelete();
-//        testCreateAllOfTablesWithDataSourceORM();
+        testCreateAllOfTablesWithDataSourceORM();
 
     }
 

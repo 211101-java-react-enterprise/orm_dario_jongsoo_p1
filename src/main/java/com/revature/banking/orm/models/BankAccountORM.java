@@ -21,7 +21,8 @@ public class BankAccountORM {
     private String account_type;
     @ColumnInORM(Constraint = "NOT NULL", DefaultValue = "0.00")
     private Double balance;
-    @ColumnInORM(Constraint = "NOT NULL", Size = 255, FOREIGN = "app_users(user_id)", Check = "(creator_id)::text <> ''::text")
+//    @ColumnInORM(Constraint = "NOT NULL", Size = 255, FOREIGN = "app_users(user_id)", Check = "(creator_id)::text <> ''::text")
+    @ColumnInORM(Constraint = "NOT NULL", Size = 255, Check = "(creator_id)::text <> ''::text")
     private String creator_id;
 //    @NotIntoDabase
 //    @ColumnInORM(Constraint = "NOT NULL", DefaultValue = "LOCALTIMESTAMP")
